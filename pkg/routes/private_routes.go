@@ -15,4 +15,8 @@ func PrivateRoutes(a *fiber.App) {
 	route.Post("/user/sign/out", middleware.JWTProtected(), controllers.UserSignOut) // de-authorization user
 	route.Post("/token/renew", middleware.JWTProtected(), controllers.RenewTokens)   // renew Access & Refresh tokens
 
+	route.Get("cat", middleware.JWTProtected(), controllers.GetCats)
+	route.Post("/cat", middleware.JWTProtected(), controllers.AddNewCat)
+	route.Delete("/cat/:id", middleware.JWTProtected(), controllers.DeleteCat)
+
 }

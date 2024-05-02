@@ -14,7 +14,8 @@ CREATE TABLE users (
     email VARCHAR (255) NOT NULL UNIQUE,
     password_hash VARCHAR (255) NOT NULL,
     user_status INT NOT NULL,
-    user_role VARCHAR (25) NOT NULL
+    user_role VARCHAR (25) NOT NULL,
+    name VARCHAR (255) NOT NULL
 );
 
 -- Create books table
@@ -28,6 +29,23 @@ CREATE TABLE books (
     book_status INT NOT NULL,
     book_attrs JSONB NOT NULL
 );
+
+CREATE TABLE cats (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    race VARCHAR(20) NOT NULL,
+    sex VARCHAR(10) NOT NULL,
+    age_in_month INT NOT NULL,
+    description TEXT NOT NULL,
+    image_urls TEXT[] NOT NULL,
+    has_matched BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    deleted_at TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
 
 -- Add indexes
 CREATE INDEX active_users ON users (id) WHERE user_status = 1;
