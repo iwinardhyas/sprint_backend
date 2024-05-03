@@ -3,13 +3,14 @@ package database
 import (
 	"os"
 
-	"github.com/create-go-app/fiber-go-template/app/queries"
+	"github.com/iwinardhyas/sprint_backend/app/queries"
 	"github.com/jmoiron/sqlx"
 )
 
 // Queries struct for collect all app queries.
 type Queries struct {
 	*queries.UserQueries // load queries from User model
+	*queries.CatQueries
 }
 
 // OpenDBConnection func for opening database connection.
@@ -38,5 +39,6 @@ func OpenDBConnection() (*Queries, error) {
 	return &Queries{
 		// Set queries from models:
 		UserQueries: &queries.UserQueries{DB: db}, // from User model
+		CatQueries:  &queries.CatQueries{DB: db},
 	}, nil
 }

@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 
-	"github.com/create-go-app/fiber-go-template/pkg/repository"
+	"github.com/iwinardhyas/sprint_backend/pkg/repository"
 )
 
 // VerifyRole func for verifying a given role.

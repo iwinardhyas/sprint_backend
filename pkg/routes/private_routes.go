@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/create-go-app/fiber-go-template/app/controllers"
-	"github.com/create-go-app/fiber-go-template/pkg/middleware"
 	"github.com/gofiber/fiber/v2"
+	"github.com/iwinardhyas/sprint_backend/app/controllers"
+	"github.com/iwinardhyas/sprint_backend/pkg/middleware"
 )
 
 // PrivateRoutes func for describe group of private routes.

@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/create-go-app/fiber-go-template/app/models"
-	"github.com/create-go-app/fiber-go-template/pkg/utils"
-	"github.com/create-go-app/fiber-go-template/platform/cache"
-	"github.com/create-go-app/fiber-go-template/platform/database"
+	"github.com/iwinardhyas/sprint_backend/app/models"
+	"github.com/iwinardhyas/sprint_backend/pkg/utils"
+	"github.com/iwinardhyas/sprint_backend/platform/cache"
+	"github.com/iwinardhyas/sprint_backend/platform/database"
 
 	"crypto/sha256"
 	"encoding/hex"
@@ -49,7 +49,7 @@ func UserSignUp(c *fiber.Ctx) error {
 	// Validate sign up fields.
 	if err := validate.Struct(signUp); err != nil {
 		// Return, if some fields are not valid.
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(400).JSON(fiber.Map{
 			"error": true,
 			"msg":   utils.ValidatorErrors(err),
 		})
@@ -97,7 +97,7 @@ func UserSignUp(c *fiber.Ctx) error {
 	// Validate user fields.
 	if err := validate.Struct(user); err != nil {
 		// Return, if some fields are not valid.
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(400).JSON(fiber.Map{
 			"error": true,
 			"msg":   utils.ValidatorErrors(err),
 		})
@@ -106,7 +106,7 @@ func UserSignUp(c *fiber.Ctx) error {
 	// Create a new user with validated data.
 	if err := db.CreateUser(user); err != nil {
 		// Return status 500 and create user process error.
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(409).JSON(fiber.Map{
 			"error": true,
 			"msg":   err.Error(),
 		})
@@ -116,7 +116,7 @@ func UserSignUp(c *fiber.Ctx) error {
 	user.PasswordHash = ""
 
 	// Return status 200 OK.
-	return c.JSON(fiber.Map{
+	return c.Status(201).JSON(fiber.Map{
 		// "error": false,
 		"message": "User registered successfully",
 		"data":    user,
@@ -147,6 +147,17 @@ func UserSignIn(c *fiber.Ctx) error {
 		})
 	}
 
+	validate := utils.NewValidator()
+
+	// Validate sign up fields.
+	if err := validate.Struct(signIn); err != nil {
+		// Return, if some fields are not valid.
+		return c.Status(400).JSON(fiber.Map{
+			"error": true,
+			"msg":   utils.ValidatorErrors(err),
+		})
+	}
+
 	// Create database connection.
 	db, err := database.OpenDBConnection()
 	if err != nil {
@@ -161,7 +172,7 @@ func UserSignIn(c *fiber.Ctx) error {
 	foundedUser, err := db.GetUserByEmail(signIn.Email)
 	if err != nil {
 		// Return, if user not found.
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+		return c.Status(404).JSON(fiber.Map{
 			"error": true,
 			"msg":   "user with the given email is not found",
 		})
@@ -171,7 +182,7 @@ func UserSignIn(c *fiber.Ctx) error {
 	compareUserPassword := utils.ComparePasswords(foundedUser.PasswordHash, signIn.Password)
 	if !compareUserPassword {
 		// Return, if password is not compare to stored in database.
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(400).JSON(fiber.Map{
 			"error": true,
 			"msg":   "wrong user email address or password",
 		})
@@ -198,7 +209,7 @@ func UserSignIn(c *fiber.Ctx) error {
 	}
 
 	// Return status 200 OK.
-	return c.JSON(fiber.Map{
+	return c.Status(201).JSON(fiber.Map{
 		"message": "User logged successfully",
 		"data": fiber.Map{
 			"email": signIn.Email,
